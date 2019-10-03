@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import {Sidebar,ContentArea} from '../Assets/Component'
-import '../Assets/Headers/index'
+import {Sidebar,ContentArea} from '../../Assets/Component'
+import '../../Assets/Headers/index'
 
 
 const Invoice = () => (

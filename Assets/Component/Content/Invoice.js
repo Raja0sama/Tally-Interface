@@ -14,7 +14,8 @@ class Invoice extends React.Component {
 		}
 	}
 	componentDidMount(){
-	const a=  window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1);
+	const a=  this.props.query
+	console.log(this.props)
 	const b =a.substr(0,1)
 	const c = this.check(b)
 		Axios.post(this.props.ip,singleV([a,c])).then((res)=>{
@@ -31,7 +32,7 @@ class Invoice extends React.Component {
 			case 'S':
 				return "Sales"
 			case 'R':
-				return "Recipt"
+				return "Receipt"
 			case 'C':
 				return "Contra"
 			case 'J':
@@ -60,17 +61,21 @@ class Invoice extends React.Component {
 			al = a['LEDGERENTRIES.LIST'].length
 			ledger = 'LEDGERENTRIES.LIST'
 		}
+		
 		const VoucherType = a.VOUCHERTYPENAME._text
 		const VoucherId = a.VOUCHERNUMBER._text
 		const Account = a.PARTYLEDGERNAME._text
 		const children = []
+		let date = a.DATE._text;
+		date = [date.substr(0,4),date.substr(4,2),date.substr(6,8)]
+		var mydate = new Date(date[0]+'-'+date[1]+'-'+date[2]);
+		mydate = mydate.toLocaleDateString()
 		a[ledger] ? a[ledger].map((e,i)=>{
 			if(e.LEDGERNAME._text == a.PARTYLEDGERNAME._text){}else{children.push({ledgername : e.LEDGERNAME._text,Amount :Math.abs(e.AMOUNT._text)})}
 		}):console.log("")
 		const amount = Math.abs(parseInt(a[ledger][al-1].AMOUNT._text))
 		const narration = a.NARRATION._text
-		const objec = {VoucherId,VoucherType,amount,Account,narration,children}
-		console.log(JSON.stringify(objec))
+		const objec = {VoucherId,VoucherType,amount,Account,narration,mydate,children}
 		Axios.post(this.props.ip2,objec).then((res)=>{
 			console.log(res)
 		})
@@ -88,7 +93,10 @@ class Invoice extends React.Component {
 			al = a['LEDGERENTRIES.LIST'].length
 			ledger = 'LEDGERENTRIES.LIST'
 		}
-		return (
+		let date = a.DATE._text;
+		date = [date.substr(0,4),date.substr(4,2),date.substr(6,8)]
+		var mydate = new Date(date[0]+'-'+date[1]+'-'+date[2]);
+				return (
 			<div className="container-fluid">
 				<h1 className="h3 mb-2 text-gray-800">{a.PERSISTEDVIEW._text}</h1>
 				<p className="mb-4">Voucher Detail can be show here as per your wish.</p>
@@ -119,10 +127,10 @@ class Invoice extends React.Component {
 							</div>
 
 							<div style={{ textAlign: 'right' }} className="col-sm-6">
-								5-04-2019<br />Monday
+							{mydate.toLocaleDateString()}
 							</div>
 							<div style={{ flex: 1 }}>
-								<table className="table table-bordered" style={{ flex: 1, marginTop: 20 }} cellspacing="0">
+								<table className="table table-bordered" style={{ flex: 1, marginTop: 20 }} cellSpacing="0">
 									<thead>
 										<tr>
 											<th>Particulars</th>
@@ -142,7 +150,7 @@ class Invoice extends React.Component {
 											if(e.LEDGERNAME._text == a.PARTYLEDGERNAME._text){
 
 											}else{
-												return (<tr role="row" style={{ flex: 1 }}>
+												return (<tr key={Math.random()} role="row" style={{ flex: 1 }}>
 															<td style={{ textAlign: 'left', backgroundColor: '#fff', width: 800 }}>
 															{e.LEDGERNAME._text}
 															</td>
@@ -159,7 +167,7 @@ class Invoice extends React.Component {
 								<div className="card mb-4" />
 								<div className="card-header">Naration </div>
 								<div className="card-body">{a.NARRATION._text}
-								<a target="_blank" href={"https://110.37.224.158:3000/vouchers/"+a.VOUCHERNUMBER._text}> Image Reference </a>
+								<a target="_blank" href={"https://"+this.props.ip+":3000/vouchers/"+a.VOUCHERNUMBER._text}> Image Reference </a>
 								</div>
 
 							</div>
@@ -168,7 +176,7 @@ class Invoice extends React.Component {
 				</div>
 			</div>
 		);}else{
-			return <div class="alert alert-danger" role="alert">
+			return <div className="alert alert-danger" role="alert">
 			 🐱🏹 Well You Have a Problem Dude With The Request or Either Voucher Number Does not Exist Do Recheck 😒 😒 😒 😒 🙌
 		  </div>
 		}

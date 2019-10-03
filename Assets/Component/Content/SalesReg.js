@@ -4,19 +4,17 @@ import saleserg from './RequestXML/SalesReg';
 import convert from 'xml-js';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import ReactTable from 'react-table';
 import selectTableHOC from 'react-table/lib/hoc/selectTable';
 import Table from 'react-table';
 import PropTypes from 'prop-types';
-
 import 'react-table/react-table.css';
 import { connect } from 'react-redux';
 import Router from 'next/router';
-import  exportToCSV  from './function';
+import exportToCSV from './function';
 
 const SelectTable = selectTableHOC(Table);
 
-class SalesRegs extends React.Component {
+class Daybook extends React.Component {
 	static defaultProps = {
 		keyField: 'id'
 	};
@@ -141,18 +139,23 @@ class SalesRegs extends React.Component {
 	};
 	componentDidMount() {
 		this.gettodayDate();
-		// this.Db(['20190401','20200401'])
+		// this.Db(['20190201','20190401'])
 	}
 	Db(e) {
 		const xmlrequest = saleserg(e);
 		axios.post(this.props.ip, xmlrequest).then((res) => {
 			let a = JSON.parse(convert.xml2json(res.data, { compact: true, spaces: 1 }));
 			a = a.ENVELOPE.BODY.IMPORTDATA.REQUESTDATA.TALLYMESSAGE;
-			console.log(a);
+
 			this.setState({ detail: a });
 			this.Parsing(a);
 		});
 	}
+	download = (event) => {
+		console.log(this.state.detail);
+		exportToCSV(this.state.data, 'Daybook');
+	};
+
 	Parsing(a) {
 		if (Array.isArray(a)) {
 			const data = [];
@@ -195,32 +198,22 @@ class SalesRegs extends React.Component {
 			this.setState({ data });
 		}
 	}
+
 	onRowClick = (rowInfo) => {
 		const a = this.state.detail.filter(
 			(e) =>
 				e.VOUCHER
 					? e.VOUCHER.VOUCHERNUMBER._text == rowInfo.original.VOUCHERid &&
 						e.VOUCHER.VOUCHERTYPENAME._text == rowInfo.original.VOUCHERTYPE
-					:    console.log('')
+					: console.log('')
 		);
-		Router.push(`/invoice?id=${a[0].VOUCHER.VOUCHERNUMBER._text}`, `/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`)
+		Router.push(`/invoice/[invoiceNumber]`, `/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`);
 
 		// Router.push({
 		// 	pathname: '/Invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}' ,query : {data : a[0].VOUCHER.VOUCHERNUMBER._text }
 		// });
 	};
-	download = (event) => {
-		const currentRecords = this.checkboxTable.getResolvedState().sortedData;
-		var data_to_download = [];
-		for (var index = 0; index < currentRecords.length; index++) {
-			let record_to_download = {};
-			for (var colIndex = 0; colIndex < header.length; colIndex++) {
-				record_to_download[header[colIndex].Header] = currentRecords[index][header[colIndex].accessor];
-			}
-			data_to_download.push(record_to_download);
-		}
-		exportToCSV(data_to_download, 'Sales Register');
-	};
+
 	print = () => {
 		if (this.state.selectAll) {
 			this.printExtend();
@@ -289,7 +282,7 @@ class SalesRegs extends React.Component {
 					<span className="icon text-white-50">
 						<i className="fas fa-check" />
 					</span>
-					<span className="text"> Search Again</span>
+					<span className="text"> SearchAgain</span>
 				</button>
 				<br />
 				<br />
@@ -298,7 +291,7 @@ class SalesRegs extends React.Component {
 						<h6 className="m-0 font-weight-bold text-primary">DataTables Example</h6>
 					</div>
 					<div className="card-body">
-					<button
+						<button
 							style={{ margin: 10 }}
 							onClick={this.download}
 							className="btn btn-danger btn-circle btn-lg"
@@ -311,8 +304,10 @@ class SalesRegs extends React.Component {
 							className="btn btn-primary btn-circle btn-lg"
 						>
 							<i className="fas fa-copy" />
-						</button><div className="table-responsive">
-						<SelectTable
+						</button>
+
+						<div className="table-responsive">
+							<SelectTable
 								ref={(r) => (this.checkboxTable = r)}
 								filterable
 								keyField="id"
@@ -373,9 +368,8 @@ const header = (onRowClick) => [
 		accessor: 'ca' // String-based value accessors!
 	}
 ];
-
 const mapStateToProps = (state /*, ownProps*/) => {
 	console.log(state);
 	return {};
 };
-export default connect(mapStateToProps)(SalesRegs);
+export default connect(mapStateToProps)(Daybook);

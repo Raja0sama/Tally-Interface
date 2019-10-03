@@ -1,4 +1,4 @@
-import Auth from '../Assets/Component/Auth/'
+import Auth from '../../Assets/Component/Auth/'
 
 const Authe = () => (
 <Auth/>

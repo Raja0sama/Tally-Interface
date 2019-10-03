@@ -141,7 +141,7 @@ class Ledger extends React.Component {
         this.gettodayDate();
         console.log(this.props)
         if(!isEmpty(this.props.query)) {
-            this.setState({name : this.props.query.q})
+            this.setState({name : this.props.query})
         }else{
             this.setState({name : false})
         }
@@ -250,6 +250,7 @@ class Ledger extends React.Component {
 	};
 
 	render() {
+		console.log(this.props)
         if(this.state.name == false){
             return (<div>
                 <div className="alert alert-warning" role="alert">
@@ -313,6 +314,9 @@ class Ledger extends React.Component {
                                     getTrProps={this.rowFn}
                                     columns={header(this.onRowClick)}
                                 />
+								<p>
+									
+								</p>
                             </div>
                         </div>
                     </div>

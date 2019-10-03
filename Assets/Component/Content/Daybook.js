@@ -207,7 +207,10 @@ class Daybook extends React.Component {
 						e.VOUCHER.VOUCHERTYPENAME._text == rowInfo.original.VOUCHERTYPE
 					: console.log('')
 		);
-		Router.push(`/invoice?id=${a[0].VOUCHER.VOUCHERNUMBER._text}`, `/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`);
+		Router.push(
+			`/invoice/[invoiceNumber]`,
+			`/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`
+		 );
 
 		// Router.push({
 		// 	pathname: '/Invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}' ,query : {data : a[0].VOUCHER.VOUCHERNUMBER._text }

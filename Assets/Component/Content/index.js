@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 
 import { useRouter } from 'next/router';
 const Content = (props) => {
-        
 	if (isEmpty(props.PG)) {
 		return (
 			<div className="alert alert-warning" role="alert">
@@ -24,7 +23,7 @@ const Content = (props) => {
 			</div>
 		);
 	} else {
-                const router = useRouter();
+		const router = useRouter();
 		const ip = isEmpty(props.PG) ? 'http://110.37.224.158:5000/Tally' : 'http://' + props.PG.Ip + ':5000/Tally';
 		const ip2 = isEmpty(props.PG)
 			? 'http://110.37.224.158:5000/GetExcelData'
@@ -38,20 +37,27 @@ const Content = (props) => {
 				break;
 			case '/':
 				return <Dashboard ip={ip} />;
-			case '/invoice':
-				return <Invoice ip2={ip2} ip={ip} />;
+		
 
 			case '/pruchaseReg':
 				return <PurchaseReg />;
 
 			case '/Accounts':
 				return <Account ip={ip} />;
-                        case '/LedgerV':
-                                return <Ledger query={router.query} ip={ip} />;
-                                        }
+			
+		}
+
+		if (router.pathname.includes('/LedgerV')) {
+			const { AccountN } = router.query;
+			return <Ledger query={AccountN} ip={ip} />;
+		} 
 
 		if (router.pathname.includes('/invoice')) {
-			return <Invoice />;
+			let { invoiceNumber } = router.query;
+			if (typeof invoiceNumber === 'undefined') {
+				invoiceNumber = router.query.id
+			  }
+			return <Invoice query={invoiceNumber} ip2={ip2} ip={ip} />;
 		} else {
 			return (
 				<div className="alert alert-warning" role="alert">
