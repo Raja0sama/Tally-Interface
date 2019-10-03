@@ -208,8 +208,8 @@ class Daybook extends React.Component {
 					: console.log('')
 		);
 		Router.push(
-			`/invoice/[invoiceNumber]`,
-			`/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`
+			`/Dashboard/invoice/[invoiceNumber]`,
+			`/Dashboard/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`
 		 );
 
 		// Router.push({

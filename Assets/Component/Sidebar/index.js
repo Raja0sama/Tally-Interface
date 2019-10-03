@@ -24,8 +24,8 @@ return(
 <hr className="sidebar-divider my-0"/>
 
 
-<li className={"" +router.pathname == "/"? "nav-item active" : "nav-item" }>
-<Link href="/">
+<li className={"" +router.pathname == "/Dashboard"? "nav-item active" : "nav-item" }>
+<Link href="/Dashboard">
   <a className="nav-link" >
     <i className="fas fa-fw fa-people">🏡</i>
     <span>Dashboard</span></a>
@@ -47,23 +47,23 @@ return(
   <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
     <div className="bg-white py-2 collapse-inner rounded">
       <h6 className="collapse-header">Register of Tally</h6>
-      <Link href="/salesreg"><a className="collapse-item">Sales Register</a></Link>
-      <Link href="/pruchaseReg"><a className="collapse-item">Pruchase Register</a></Link>
+      <Link href="/Dashboard/salesreg"><a className="collapse-item">Sales Register</a></Link>
+      <Link href="/Dashboard/pruchaseReg"><a className="collapse-item">Pruchase Register</a></Link>
     </div>
   </div>
 </li> 
 
 
-<li className={"" +router.pathname == "/Accounts"? "nav-item active" : "nav-item" }>
-<Link href="/Accounts">
+<li className={"" +router.pathname == "/Dashboard/Accounts"? "nav-item active" : "nav-item" }>
+<Link href="/Dashboard/Accounts">
   <a className="nav-link" >
     <i className="fas fa-fw fa-people">🤓</i>
     <span>Accounts</span></a>
     </Link>
 </li>
 
-<li className={"" +router.pathname == "/daybook"? "nav-item active" : "nav-item" }>
-<Link href="/daybook">
+<li className={"" +router.pathname == "/Dashboard/daybook"? "nav-item active" : "nav-item" }>
+<Link href="/Dashboard/daybook">
   <a className="nav-link" >
     <i className="fas fa-fw fa-">📕</i>
     <span>Daybook</span></a>

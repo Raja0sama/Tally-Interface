@@ -29,30 +29,30 @@ const Content = (props) => {
 			? 'http://110.37.224.158:5000/GetExcelData'
 			: 'http://' + props.PG.Ip + ':5000/GetExcelData';
 		switch (router.pathname) {
-			case '/salesreg':
+			case '/Dashboard/salesreg':
 				return <SalesRegs ip2={ip2} ip={ip} />;
 				break;
-			case '/daybook':
+			case '/Dashboard/daybook':
 				return <Daybook ip2={ip2} ip={ip} />;
 				break;
-			case '/':
+			case '/Dashboard':
 				return <Dashboard ip={ip} />;
 		
 
-			case '/pruchaseReg':
+			case '/Dashboard/pruchaseReg':
 				return <PurchaseReg />;
 
-			case '/Accounts':
+			case '/Dashboard/Accounts':
 				return <Account ip={ip} />;
 			
 		}
 
-		if (router.pathname.includes('/LedgerV')) {
+		if (router.pathname.includes('/Dashboard/LedgerV')) {
 			const { AccountN } = router.query;
 			return <Ledger query={AccountN} ip={ip} />;
 		} 
 
-		if (router.pathname.includes('/invoice')) {
+		if (router.pathname.includes('/Dashboard/invoice')) {
 			let { invoiceNumber } = router.query;
 			if (typeof invoiceNumber === 'undefined') {
 				invoiceNumber = router.query.id

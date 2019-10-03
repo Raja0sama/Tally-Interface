@@ -18,7 +18,7 @@ const firebaseApp = firebase
   class Auth extends React.Component {
   uiConfig = {
     signInFlow: 'popup',
-    signInSuccessUrl: '/',
+    signInSuccessUrl: '/Dashboard',
 
     signInOptions: [
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -50,7 +50,9 @@ const firebaseApp = firebase
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });
-		Router.push(`/`)
+    // Router.push(`/Dashboard`)
+    window.location.href = '/Dashboard';
+
     }
     });
     

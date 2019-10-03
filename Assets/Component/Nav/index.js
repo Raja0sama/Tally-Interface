@@ -53,7 +53,7 @@ const NavBar = (props) => {
 					<button
 						onClick={() => {
 							state.voucherN
-								? Router.push(`/invoice?id=${state.voucherN}`, `/invoice/${state.voucherN}`)
+								? Router.push(`/Dashboard/invoice?id=${state.voucherN}`, `/Dashboard/invoice/${state.voucherN}`)
 								: console.log('🤣 Kindly Add a Vocuher Number');
 						}}
 						className="btn btn-primary"
