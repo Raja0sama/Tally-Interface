@@ -112,14 +112,14 @@ class Account extends React.Component {
 											/>
 											{this.state.g ? (
 												this.state.g.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.GROUP._attributes.NAME)} href={"/LedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
+													<Link as={"/Dashboard/GLedgerV/"+encodeURIComponent(j.GROUP._attributes.NAME)} href={"/Dashboard/GLedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
 													<a class="list-group-item list-group-item-action">
 														{j.GROUP._attributes.NAME}
 													</a></Link>
 												))
 											) : (
 												e.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.GROUP._attributes.NAME)} href={"/LedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
+													<Link as={"/Dashboard/GLedgerV/"+encodeURIComponent(j.GROUP._attributes.NAME)} href={"/Dashboard/GLedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
 													<a class="list-group-item list-group-item-action">
 														{j.GROUP._attributes.NAME}
 													</a></Link>

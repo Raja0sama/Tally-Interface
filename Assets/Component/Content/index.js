@@ -3,7 +3,9 @@ import Invoice from '../Content/Invoice';
 import SalesRegs from '../Content/SalesReg';
 import PurchaseReg from '../Content/PurchaseReg';
 import Ledger from '../Content/Ledger';
+import LedgerG from '../Content/LedgerG';
 import Account from '../Content/Accounts';
+import Receivables from '../Content/Receivables';
 import Dashboard from './Dashboard';
 import { connect } from 'react-redux';
 // import firebase from '../../Firebase';
@@ -37,26 +39,31 @@ const Content = (props) => {
 				break;
 			case '/Dashboard':
 				return <Dashboard ip={ip} />;
-		
 
 			case '/Dashboard/pruchaseReg':
 				return <PurchaseReg />;
 
+			case '/Dashboard/Receivables':
+				return <Receivables ip={ip} />;
+
 			case '/Dashboard/Accounts':
 				return <Account ip={ip} />;
-			
 		}
 
 		if (router.pathname.includes('/Dashboard/LedgerV')) {
 			const { AccountN } = router.query;
 			return <Ledger query={AccountN} ip={ip} />;
-		} 
+		}
+		if (router.pathname.includes('/Dashboard/GLedgerV')) {
+			const { AccountN } = router.query;
+			return <LedgerG query={AccountN} ip={ip} />;
+		}
 
 		if (router.pathname.includes('/Dashboard/invoice')) {
 			let { invoiceNumber } = router.query;
 			if (typeof invoiceNumber === 'undefined') {
-				invoiceNumber = router.query.id
-			  }
+				invoiceNumber = router.query.id;
+			}
 			return <Invoice query={invoiceNumber} ip2={ip2} ip={ip} />;
 		} else {
 			return (

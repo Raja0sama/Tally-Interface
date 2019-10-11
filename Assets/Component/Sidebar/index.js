@@ -70,6 +70,23 @@ return(
     </Link>
 </li>
 
+<li className="nav-item">
+  <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1" aria-expanded="true" aria-controls="collapseTwo">
+    <i className="fas fa-fw fa">✨</i>
+    <span>OutStanding</span>
+  </a>
+  <div id="collapseTwo1" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    <div className="bg-white py-2 collapse-inner rounded">
+      <h6 className="collapse-header">OutStanding of Tally</h6>
+      <Link href="/Dashboard/Receivables"><a className="collapse-item">Receivables</a></Link>
+      <Link href="/Dashboard/salesreg"><a className="collapse-item">Payables</a></Link>
+      <Link href="/Dashboard/salesreg"><a className="collapse-item">Ledger</a></Link>
+      <Link href="/Dashboard/salesreg"><a className="collapse-item">Group</a></Link>
+    </div>
+  </div>
+</li> 
+
+
 <hr className="sidebar-divider d-none d-md-block"/>
 <li className={"nav-item " }>
   <a data-toggle="modal" data-target="#exampleModal" className="nav-link" >
