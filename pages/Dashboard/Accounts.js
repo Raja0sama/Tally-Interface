@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {Sidebar,ContentArea} from '../s../Assets/Component'
+import {Sidebar,ContentArea} from '../../Assets/Component'
 import '../../Assets/Headers/index'
 
 const Account = () => (

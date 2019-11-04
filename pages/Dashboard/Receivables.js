@@ -1,11 +1,8 @@
-
-
-import Link from 'next/link';
 import {Sidebar,ContentArea} from '../../Assets/Component'
 import '../../Assets/Headers/index'
 
+const Receviables = () => (
 
-const Invoice = () => (
   <div>
   <div id="wrapper">
     <Sidebar/>
@@ -14,4 +11,4 @@ const Invoice = () => (
   </div>
 );
 
-export default Invoice;
+export default Receviables;

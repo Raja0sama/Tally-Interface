@@ -85,7 +85,7 @@ class Account extends React.Component {
 												))
 											) : (
 												e.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.CURRENCY.MAILINGNAME._text)} href={"/LedgerV?q="+encodeURI(j.CURRENCY.MAILINGNAME._text)}>
+													<Link as={"/Dashboard/LedgerV/"+encodeURI(j.CURRENCY.MAILINGNAME._text)} href={"/Dashboard/LedgerV?q="+encodeURI(j.CURRENCY.MAILINGNAME._text)}>
 													<button href="#" class="list-group-item list-group-item-action">
 														{j.CURRENCY.MAILINGNAME._text}
 													</button>
@@ -112,14 +112,14 @@ class Account extends React.Component {
 											/>
 											{this.state.g ? (
 												this.state.g.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.GROUP._attributes.NAME)} href={"/LedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
+													<Link as={"/Dashboard/GLedgerV/"+encodeURIComponent(j.GROUP._attributes.NAME)} href={"/Dashboard/GLedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
 													<a class="list-group-item list-group-item-action">
 														{j.GROUP._attributes.NAME}
 													</a></Link>
 												))
 											) : (
 												e.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.GROUP._attributes.NAME)} href={"/LedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
+													<Link as={"/Dashboard/GLedgerV/"+encodeURIComponent(j.GROUP._attributes.NAME)} href={"/Dashboard/GLedgerV?q="+encodeURI(j.GROUP._attributes.NAME)}>
 													<a class="list-group-item list-group-item-action">
 														{j.GROUP._attributes.NAME}
 													</a></Link>
@@ -145,14 +145,14 @@ class Account extends React.Component {
 											/>
 											{this.state.g ? (
 												this.state.g.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.LEDGER._attributes.NAME)} href={"/LedgerV/[AccountN]"}>
+													<Link as={"/Dashboard/LedgerV/"+encodeURI(j.LEDGER._attributes.NAME)} href={"/Dashboard/LedgerV/[AccountN]"}>
 													<a class="list-group-item list-group-item-action">
 														{j.LEDGER._attributes.NAME}
 													</a></Link>
 												))
 											) : (
 												e.map((j) => (
-													<Link as={"/LedgerV/"+encodeURI(j.LEDGER._attributes.NAME)} href={"/LedgerV/[AccountN]"}>
+													<Link as={"/Dashboard/LedgerV/"+encodeURI(j.LEDGER._attributes.NAME)} href={"/Dashboard/LedgerV/[AccountN]"}>
 													<a class="list-group-item list-group-item-action">
 														{j.LEDGER._attributes.NAME}
 													</a></Link>

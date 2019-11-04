@@ -189,7 +189,7 @@ class Ledger extends React.Component {
         console.log(rowInfo.original.VOUCHERid)
       const a = search(rowInfo.original.VOUCHERid,this.state.data)
     //   console.log(a.VOUCHERid)
-		Router.push(`/invoice?id=${a.VOUCHERid}`, `/invoice/${a.VOUCHERid}`);
+		Router.push(`/Dashboard/invoice?id=${a.VOUCHERid}`, `/Dashboard/invoice/${a.VOUCHERid}`);
 
 		// Router.push({
 		// 	pathname: '/Invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}' ,query : {data : a[0].VOUCHER.VOUCHERNUMBER._text }

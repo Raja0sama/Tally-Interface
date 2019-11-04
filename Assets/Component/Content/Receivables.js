@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import saleserg from './RequestXML/SalesReg';
+import receivables from './RequestXML/receivables';
 import convert from 'xml-js';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -14,7 +14,7 @@ import exportToCSV from './function';
 
 const SelectTable = selectTableHOC(Table);
 
-class Daybook extends React.Component {
+class Receivables extends React.Component {
 	static defaultProps = {
 		keyField: 'id'
 	};
@@ -138,17 +138,24 @@ class Daybook extends React.Component {
 		});
 	};
 	componentDidMount() {
-		this.gettodayDate();
-		// this.Db(['20190201','20190401'])
+        this.gettodayDate();
+        console.log(this.props)
+        if(!isEmpty(this.props.query)) {
+            this.setState({name : this.props.query})
+        }else{
+            this.setState({name : false})
+        }
 	}
 	Db(e) {
-		const xmlrequest = saleserg(e);
-		axios.post(this.props.ip, xmlrequest).then((res) => {
-			let a = JSON.parse(convert.xml2json(res.data, { compact: true, spaces: 1 }));
-			a = a.ENVELOPE.BODY.IMPORTDATA.REQUESTDATA.TALLYMESSAGE;
+		const xmlrequest = receivables(e);
+		console.log(xmlrequest)
 
-			this.setState({ detail: a });
-			this.Parsing(a);
+		axios.post(this.props.ip, xmlrequest).then((res) => {
+			console.log(res)
+            let a = JSON.parse(convert.xml2json(res.data, { compact: true, spaces: 1 }));
+            console.log(a)
+
+			 this.Parsing(a);
 		});
 	}
 	download = (event) => {
@@ -157,61 +164,34 @@ class Daybook extends React.Component {
 	};
 
 	Parsing(a) {
-		if (Array.isArray(a)) {
+		
+		if (Array.isArray(a.ENVELOPE.BILLFIXED)) {
 			const data = [];
-			a.forEach((element, i) => {
-				if (element.VOUCHER) {
-					let date = element.VOUCHER.DATE._text;
-
-					const ledgername = element.VOUCHER['ALLLEDGERENTRIES.LIST']
-						? element.VOUCHER['ALLLEDGERENTRIES.LIST'][0]
-							? element.VOUCHER['ALLLEDGERENTRIES.LIST'][0].LEDGERNAME._text
-							: ''
-						: element.VOUCHER['LEDGERENTRIES.LIST'][0]
-							? element.VOUCHER['LEDGERENTRIES.LIST'][0].LEDGERNAME._text
-							: '';
-					const VOUCHERTYPE = element.VOUCHER.VOUCHERTYPENAME._text;
-					const VOUCHERid = element.VOUCHER.VOUCHERNUMBER._text;
-					let da = element.VOUCHER['LEDGERENTRIES.LIST']
-						? element.VOUCHER['LEDGERENTRIES.LIST'][0]
-							? Math.abs(parseInt(element.VOUCHER['LEDGERENTRIES.LIST'][0].AMOUNT._text))
-							: 'undefined'
-						: '';
-					let ca = element.VOUCHER['ALLLEDGERENTRIES.LIST']
-						? element.VOUCHER['ALLLEDGERENTRIES.LIST'][0]
-							? parseInt(element.VOUCHER['ALLLEDGERENTRIES.LIST'][0].AMOUNT._text)
-							: 'undefined Data' + i
-						: '';
-					if (ca == 'undefined' || ca == '') {
-					} else {
-						if (ca < 0) {
-							da = Math.abs(ca);
-							ca = '';
-						} else {
-							ca = Math.abs(ca);
-						}
-					}
-					data.push({ id: VOUCHERid, date, ledgername, VOUCHERTYPE, VOUCHERid, da, ca });
-				} else {
-				}
-			});
+			a.ENVELOPE.BILLFIXED.forEach((element, i) => {
+				data.push({ 
+                    id: element.BILLREF._text, 
+					date: element.BILLDATE._text, 
+					dateDue: a.ENVELOPE.BILLDUE[i]._text, 
+                    ledgername : element.BILLPARTY._text, 
+                    BillDue : a.ENVELOPE.BILLOVERDUE[i]._text, 
+                    VOUCHERid : element.BILLREF._text ,
+                     Op : a.ENVELOPE.BILLOP[i]._text.replace('-',''),
+                     CL : a.ENVELOPE.BILLCL[i]._text.replace('-','')
+                    });
+            });
+            console.log(data)
 			this.setState({ data });
 		}
 	}
 
 	onRowClick = (rowInfo) => {
-		const a = this.state.detail.filter(
-			(e) =>
-				e.VOUCHER
-					? e.VOUCHER.VOUCHERNUMBER._text == rowInfo.original.VOUCHERid &&
-						e.VOUCHER.VOUCHERTYPENAME._text == rowInfo.original.VOUCHERTYPE
-					: console.log('')
-		);
-		Router.push(`/Dashboard/invoice/[invoiceNumber]`, `/Dashboard/invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}`);
+        console.log(this.state.data)
+        console.log(rowInfo.original.VOUCHERid)
+      const a = search(rowInfo.original.VOUCHERid,this.state.data)
+    //   console.log(a.VOUCHERid)
+		Router.push(`/Dashboard/invoice?id=${a.VOUCHERid}`, `/Dashboard/invoice/${a.VOUCHERid}`);
 
-		// Router.push({
-		// 	pathname: '/Invoice/${a[0].VOUCHER.VOUCHERNUMBER._text}' ,query : {data : a[0].VOUCHER.VOUCHERNUMBER._text }
-		// });
+	
 	};
 
 	print = () => {
@@ -268,64 +248,71 @@ class Daybook extends React.Component {
 	};
 
 	render() {
-		return (
-			<div className="container-fluid">
-				<h1 className="h3 mb-2 text-gray-800">DayBook</h1>
-				<p className="mb-4">Here You will be shown records from DAYBOOK OF tally .</p>
-				<DatePicker selected={this.state.startDate} onChange={this.handleChange} />{' '}
-				<DatePicker selected={this.state.endDate} onChange={this.handleChange1} />
-				<button
-					style={{ marginLeft: 10 }}
-					onClick={() => this.Db([ this.state.sd, this.state.ed ])}
-					className="btn btn-primary btn-icon-split"
-				>
-					<span className="icon text-white-50">
-						<i className="fas fa-check" />
-					</span>
-					<span className="text"> SearchAgain</span>
-				</button>
-				<br />
-				<br />
-				<div className="card shadow mb-4">
-					<div className="card-header py-3">
-						<h6 className="m-0 font-weight-bold text-primary">DataTables Example</h6>
-					</div>
-					<div className="card-body">
-						<button
-							style={{ margin: 10 }}
-							onClick={this.download}
-							className="btn btn-danger btn-circle btn-lg"
-						>
-							<i className="fas fa-arrow-down" />
-						</button>
-						<button
-							style={{ margin: 10 }}
-							onClick={this.print}
-							className="btn btn-primary btn-circle btn-lg"
-						>
-							<i className="fas fa-copy" />
-						</button>
-
-						<div className="table-responsive">
-							<SelectTable
-								ref={(r) => (this.checkboxTable = r)}
-								filterable
-								keyField="id"
-								//  getTrProps={this.onRowClick}
-								data={this.state.data}
-								toggleSelection={this.toggleSelection}
-								selectAll={this.state.selectAll}
-								selectType="checkbox"
-								toggleAll={this.toggleAll}
-								isSelected={this.isSelected}
-								getTrProps={this.rowFn}
-								columns={header(this.onRowClick)}
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-		);
+		console.log(this.props)
+       
+            return (
+                <div className="container-fluid">
+                    <h1 className="h3 mb-2 text-gray-800">Ledger 😎</h1>
+                    <p className="mb-4">Here You will be shown records from Ledger OF tally .</p>
+                    <DatePicker selected={this.state.startDate} onChange={this.handleChange} />{' '}
+                    <DatePicker selected={this.state.endDate} onChange={this.handleChange1} />
+                    <button
+                        style={{ marginLeft: 10 }}
+                        onClick={() => this.Db([ this.state.sd, this.state.ed])}
+                        className="btn btn-primary btn-icon-split"
+                    >
+                    <span className="icon text-white-50">
+                        <i className="fas fa-check" />
+                    </span>
+                        <span className="text"> SearchAgain</span>
+                    </button>
+                    <br />
+                    <br />
+                    <div className="card shadow mb-4">
+                        <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                        </div>
+                        <div className="card-body">
+                            <button
+                                style={{ margin: 10 }}
+                                onClick={this.download}
+                                className="btn btn-danger btn-circle btn-lg"
+                            >
+                                <i className="fas fa-arrow-down" />
+                            </button>
+                            <button
+                                style={{ margin: 10 }}
+                                onClick={this.print}
+                                className="btn btn-primary btn-circle btn-lg"
+                            >
+                                <i className="fas fa-copy" />
+                            </button>
+    
+                            <div className="table-responsive">
+                                <SelectTable
+                                    ref={(r) => (this.checkboxTable = r)}
+                                    filterable
+                                    keyField="id"
+                                    //  getTrProps={this.onRowClick}
+                                    data={this.state.data}
+                                    toggleSelection={this.toggleSelection}
+                                    selectAll={this.state.selectAll}
+                                    selectType="checkbox"
+                                    toggleAll={this.toggleAll}
+                                    isSelected={this.isSelected}
+                                    getTrProps={this.rowFn}
+                                    columns={header(this.onRowClick)}
+                                />
+								<p>
+									
+								</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        
+		
 	}
 }
 const header = (onRowClick) => [
@@ -348,28 +335,47 @@ const header = (onRowClick) => [
 		accessor: 'date' // String-based value accessors!
 	},
 	{
+		Header: 'Due Date',
+		accessor: 'dateDue' // String-based value accessors!
+	},
+	{
 		Header: 'Name',
 		accessor: 'ledgername' // String-based value accessors!
 	},
 	{
-		Header: 'Voucher type',
-		accessor: 'VOUCHERTYPE' // String-based value accessors!
+		Header: 'Bill Over Due',
+		accessor: 'BillDue' // String-based value accessors!
 	},
 	{
 		Header: 'Voucher Id',
 		accessor: 'VOUCHERid' // String-based value accessors!
 	},
 	{
-		Header: 'Debit Amount',
-		accessor: 'da' // String-based value accessors!
+		Header: 'Opening Balance',
+		accessor: 'Op' // String-based value accessors!
 	},
 	{
-		Header: 'Credit Amount',
-		accessor: 'ca' // String-based value accessors!
+		Header: 'Closing Balance',
+		accessor: 'CL' // String-based value accessors!
 	}
 ];
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
 const mapStateToProps = (state /*, ownProps*/) => {
 	console.log(state);
 	return {};
 };
-export default connect(mapStateToProps)(Daybook);
+function search(nameKey, myArray){
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i].VOUCHERid === nameKey) {
+            return myArray[i];
+        }
+    }
+}
+
+export default connect(mapStateToProps)(Receivables);
